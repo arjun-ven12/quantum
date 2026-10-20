@@ -1,0 +1,5 @@
+import {quboEnergy} from './math';
+/** Textbook p.35 two unit-duration tasks, one agent, two slots, dependency 1→2. */
+export function toyScheduleQubo(penalty:number){if(!Number.isFinite(penalty)||penalty<0)throw Error('Invalid penalty');const Q=Array.from({length:4},()=>Array(4).fill(0));for(let i=0;i<4;i++)Q[i][i]=-penalty;for(const [i,j,w] of [[0,1,2],[2,3,2],[0,2,1],[1,2,1],[1,3,1]])Q[i][j]=w*penalty;return {Q,offset:2*penalty}}
+export function toyScheduleLandscape(penalty:number){const {Q,offset}=toyScheduleQubo(penalty);return Array.from({length:16},(_,n)=>{const bits=Array.from({length:4},(_,i)=>(n>>(3-i))&1);const exactOne=bits[0]+bits[1]===1&&bits[2]+bits[3]===1;const forbidden=bits[0]*bits[2]+bits[1]*bits[2]+bits[1]*bits[3];return {bits,energy:offset+quboEnergy(Q,bits),feasible:exactOne&&forbidden===0}})}
+export function trialsForTarget(success:number,target:number,duration:number){if(!(success>0&&success<1&&target>0&&target<1&&duration>0))throw Error('Use 0<p,q<1 and positive duration');const trials=Math.ceil(Math.log(1-target)/Math.log(1-success));return {trials,time:trials*duration}}

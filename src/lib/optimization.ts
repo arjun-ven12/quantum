@@ -1,0 +1,8 @@
+import {quboEnergy,quboToIsing} from './math';
+/** Textbook p. 23 upper-triangular two-task, two-agent model. Bit order 1A,1B,2A,2B. */
+export function allocationQubo(costs:[number,number,number,number],penalty:number){if(costs.some(x=>!Number.isFinite(x))||!Number.isFinite(penalty)||penalty<0)throw Error('Invalid costs or penalty');const Q=Array.from({length:4},()=>Array(4).fill(0));for(let i=0;i<4;i++)Q[i][i]=costs[i]-penalty;Q[0][1]=2*penalty;Q[2][3]=2*penalty;Q[0][2]=penalty;Q[1][3]=penalty;return {Q,offset:2*penalty,ising:quboToIsing(Q)}}
+export function allocationLandscape(costs:[number,number,number,number],penalty:number){const {Q,offset}=allocationQubo(costs,penalty);return Array.from({length:16},(_,n)=>{const bits=Array.from({length:4},(_,i)=>(n>>(3-i))&1);const objective=bits.reduce((s,b,i)=>s+b*costs[i],0);const taskViolations=Number(bits[0]+bits[1]!==1)+Number(bits[2]+bits[3]!==1);const capacityViolations=bits[0]*bits[2]+bits[1]*bits[3];return {bits,objective,violations:taskViolations+capacityViolations,feasible:taskViolations+capacityViolations===0,energy:offset+quboEnergy(Q,bits)}})}
+export const metropolisAcceptance=(delta:number,temperature:number)=>{if(!Number.isFinite(delta)||!Number.isFinite(temperature)||temperature<=0)throw Error('Temperature must be positive');return Math.min(1,Math.exp(-delta/temperature))};
+export function flipDelta(Q:number[][],bits:number[],i:number){if(i<0||i>=bits.length)throw Error('Invalid bit');const before=quboEnergy(Q,bits);const flipped=[...bits];flipped[i]=1-flipped[i];return quboEnergy(Q,flipped)-before}
+/** Textbook p. 26 one-qubit H_C=Z, H_M=X convention. */
+export const oneQubitQaoa=(gamma:number,beta:number)=>Math.sin(2*gamma)*Math.sin(2*beta);

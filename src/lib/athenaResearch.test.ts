@@ -1,0 +1,3 @@
+import {describe,it,expect} from 'vitest';
+import {toyScheduleQubo,toyScheduleLandscape,trialsForTarget} from './athenaResearch';
+describe('Athena textbook research cases',()=>{it('matches p.35 compiler and unique feasible zero-energy plan',()=>{const model=toyScheduleQubo(10);expect(model.offset).toBe(20);expect(model.Q).toEqual([[-10,20,10,0],[0,-10,10,10],[0,0,-10,20],[0,0,0,-10]]);const rows=toyScheduleLandscape(10);expect(rows.filter(x=>x.feasible).map(x=>x.bits.join(''))).toEqual(['1001']);expect(rows.find(x=>x.bits.join('')==='1001')?.energy).toBe(0)});it('calculates p.37 independent time-to-target',()=>{expect(trialsForTarget(.5,.95,2)).toEqual({trials:5,time:10});expect(()=>trialsForTarget(0,.95,2)).toThrow()})});
