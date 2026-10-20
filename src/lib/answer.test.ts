@@ -1,0 +1,3 @@
+import {describe,it,expect} from 'vitest';
+import {parseNumeric,numericEquivalent} from './answer';
+describe('offline numeric answers',()=>{it('checks fractions, roots and pi',()=>{expect(parseNumeric('1/6')).toBeCloseTo(1/6);expect(parseNumeric('sqrt(2)/2')).toBeCloseTo(Math.SQRT1_2);expect(parseNumeric('π/2')).toBeCloseTo(Math.PI/2)});it('rejects code, division by zero and malformed expressions',()=>{expect(parseNumeric('alert(1)')).toBeNull();expect(parseNumeric('1/0')).toBeNull();expect(parseNumeric('2+')).toBeNull()});it('uses explicit numerical tolerance',()=>{expect(numericEquivalent('0.166667',1/6,1e-5)).toBe(true);expect(numericEquivalent('0.1',1/6,1e-5)).toBe(false)})});

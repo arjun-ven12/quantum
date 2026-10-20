@@ -1,4 +1,5 @@
 import {create} from 'zustand';
+export type LabTab='complex'|'matrix'|'circuit'|'bloch'|'mechanics'|'algorithms';
 type Page='dashboard'|'learn'|'lab'|'practice'|'knowledge'|'athena'|'settings';
-type State={page:Page;lessonId:string|null;theme:'dark'|'light';setPage:(page:Page)=>void;openLesson:(id:string)=>void;setTheme:(theme:'dark'|'light')=>void};
-export const useApp=create<State>((set)=>({page:'dashboard',lessonId:null,theme:(localStorage.getItem('atlas-theme')==='light'?'light':'dark'),setPage:(page)=>set({page,lessonId:null}),openLesson:(lessonId)=>set({page:'learn',lessonId}),setTheme:(theme)=>{localStorage.setItem('atlas-theme',theme);set({theme});}}));
+type State={page:Page;lessonId:string|null;textbookPage:number|null;labTab:LabTab;openTextbookPage:(page:number)=>void;openLab:(tab:LabTab)=>void;theme:'dark'|'light';setPage:(page:Page)=>void;openLesson:(id:string)=>void;setTheme:(theme:'dark'|'light')=>void};
+export const useApp=create<State>((set)=>({page:'dashboard',lessonId:null,textbookPage:null,labTab:'complex',theme:(localStorage.getItem('atlas-theme')==='light'?'light':'dark'),setPage:(page)=>set({page,lessonId:null,textbookPage:null}),openLesson:(lessonId)=>set({page:'learn',lessonId,textbookPage:null}),openTextbookPage:(textbookPage)=>set({page:'learn',lessonId:null,textbookPage}),openLab:(labTab)=>set({page:'lab',lessonId:null,textbookPage:null,labTab}),setTheme:(theme)=>{localStorage.setItem('atlas-theme',theme);set({theme});}}));

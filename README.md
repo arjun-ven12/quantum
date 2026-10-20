@@ -1,63 +1,52 @@
 # Quantum Atlas
 
-An offline-first quantum computing study laboratory. The current build is an honest foundation while the requested textbook PDF is unavailable. The nine chapter names come from the project brief. The two shipped lessons are **supplementary** and deliberately have no invented textbook page references.
+An offline-first, mobile-first quantum computing learning laboratory built from the supplied 40-page *Advanced Quantum Computing: Mathematics, algorithms and research for Athena* textbook.
 
-## Run
+**Current textbook coverage:** all 40 PDF pages are indexed and searchable offline. Pages 3–16 have fully authored interactive lessons; pages 17–39 have source transcripts, mapped objectives, one checked question each and connected labs where relevant, and are explicitly marked **partial**. Pages 1, 2 and 40 are reference material. See the [page-by-page coverage report](COVERAGE.md) for implemented concepts and remaining work.
+
+## Run and install
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the printed local URL. For an installable PWA, deploy the production build over HTTPS:
+For an installable Android PWA, build and deploy over HTTPS:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-In Android Chrome, open the HTTPS deployment and choose **Install app** or **Add to Home screen**. `localhost` is accepted for local service-worker testing; a remote HTTP address is not. The built service worker precaches app assets and bundled supplementary content. Notes, progress, and circuits live in IndexedDB; export a JSON backup in Settings.
+Open the HTTPS deployment in Android Chrome and choose **Install app** or **Add to Home screen**. `localhost` also supports service-worker testing. Bundled lessons, source text, the PDF and lab code are precached. Notes, progress, assessments and circuits are stored in IndexedDB. Export a JSON backup from Settings regularly; browser storage is not a guaranteed permanent backup.
 
-## Verification
+## Verify
 
 ```bash
 npm test
 npm run test:e2e
-npm run build
+npm run test:offline
+npm run coverage:report
 ```
 
-Playwright checks desktop and a 360×800 touch viewport. If Chromium is unavailable, run `npx playwright install --with-deps chromium`.
+Playwright tests cover desktop, 360×800 portrait and 800×360 landscape viewports. Install the browser with `npx playwright install --with-deps chromium` if necessary.
 
 ## Architecture
 
 | Area | Location | Responsibility |
 | --- | --- | --- |
-| Curriculum | `src/content/curriculum.ts` | Typed lessons and chapter ordering; source provenance fields |
-| Math engine | `src/lib/math.ts` | Complex arithmetic, linear algebra, ideal state vectors, QUBO conversion |
-| Persistence | `src/lib/storage.ts` | Versioned Dexie tables, backup import/export, practice events |
-| App state | `src/lib/appState.ts` | Navigation and theme |
-| Labs | `src/screens/` | Complex plane, matrix editor, small circuit builder |
-| Interface | `src/App.tsx`, `src/index.css` | Mobile-first navigation, lessons, practice, notes, settings |
-| PWA | `vite.config.ts`, `public/` | Manifest, icons, generated precache service worker |
+| Original source | `Advanced_Quantum_Computing_Athena_FINAL.pdf`, `src/content/textbook-source.json` | Supplied 40-page PDF and page-indexed text with checksum |
+| Source map | `src/content/textbook-map.ts` | Sections, concepts, objectives, equations, diagrams, lab links and coverage status for every page |
+| Interactive content | `src/content/foundation.ts`, `src/content/mechanics.ts`, `src/content/computation.ts`, `src/content/algorithms.ts`, `src/content/page-checks.ts` | Authored full lessons for pp. 3–16 and partial-page checks for pp. 17–39 |
+| Source reader | `src/screens/Textbook.tsx` | Page navigation, formula tutoring, derivations, assessed practice, annotations and PDF references |
+| Math engine | `src/lib/math.ts`, `src/lib/answer.ts`, `src/lib/allocation.ts` | Complex arithmetic, linear algebra, ideal state vectors, deterministic numeric checking, QUBO/Ising |
+| Persistence | `src/lib/storage.ts` | Versioned Dexie tables and backup import/export |
+| Labs | `src/screens/` | Complex plane, matrix editor, circuit builder, Bloch sphere, mechanics and algorithm workbenches, and Athena allocation model |
+| Knowledge base | `src/screens/KnowledgeBase.tsx`, `src/screens/KnowledgeGraph.tsx` | Markdown/KaTeX notes, search, backlinks and graph |
+| PWA | `vite.config.ts`, `public/` | Manifest, icons and precache service worker |
 
-The simulator uses qubit 0 as the most significant bit. In a two-qubit state, array indices 0, 1, 2, 3 mean `|00⟩`, `|01⟩`, `|10⟩`, `|11⟩`. Current circuits are ideal and noiseless, support 1–3 qubits, and use gates H, X, Y, Z, S, T, and CNOT.
+The simulator uses qubit 0 as the most significant bit: two-qubit array indices 0, 1, 2, 3 mean `|00⟩`, `|01⟩`, `|10⟩`, `|11⟩`. The textbook spin convention is `s = 2x − 1`; the QUBO conversion and tests use it. All simulations are ideal and local, not demonstrations of hardware speedup. The Athena model is a self-contained research exercise and never executes live tasks.
 
-## Source coverage and remaining work
+## Remaining work
 
-| Source chapter (titles from brief) | Source pages inspected | Implemented | Pending |
-| --- | --- | --- | --- |
-| 1. Mathematical Foundations | PDF missing | Two **supplementary** lessons; complex, matrix, and Bloch labs | Original headings, examples, exercises, page mapping, full coverage |
-| 2. Mathematical Quantum Mechanics | PDF missing | Tested state-vector operations | Source lessons, Measurement and entanglement lab |
-| 3. Quantum Computation | PDF missing | Small circuit builder and simulator | Source lessons, rotations and controls, measurement editing |
-| 4. Quantum Algorithms | PDF missing | — | All source lessons and algorithm demonstrations |
-| 5. Quantum Optimisation | PDF missing | QUBO/Ising engine and tests | Source lessons, interactive optimisation lab and baselines |
-| 6. Quantum Machine Learning | PDF missing | — | Source lessons and numerical demonstrations |
-| 7. Quantum Cryptography | PDF missing | — | Source lessons and BB84 simulation |
-| 8. Athena: Advanced Algorithm Research | PDF missing | Editable two-task allocation model with exact enumeration, QUBO matrix, Ising conversion | Textbook mapping, larger models, validated performance comparisons |
-| 9. Exercises and Research Challenges | PDF missing | — | Source exercises and research challenges |
-
-**Textbook coverage: 0 of 40 pages verified.** The PDF `Advanced_Quantum_Computing_Athena_FINAL(1).pdf` must be supplied before curriculum transcription, claims about source coverage, or textbook-based validation can proceed. Once available: extract every page, map headings, definitions, notation, examples, diagrams, and exercises into typed content; link each concept to its page; implement chapter-by-chapter and update this table. Supplementary content remains distinctly labeled.
-
-## Current limitations
-
-The formula tutor offers deterministic explanations and step reveal for the two foundation lessons; it does not yet validate arbitrary symbolic derivations. Practice uses fixed numerical examples and a simple transparent review interval, not a full adaptive engine. Notes currently support plain text, tags, and knowledge type; Markdown rendering, backlinks, graph, flashcards, and reference upload are future work. There is no AI gateway. The Athena laboratory is a tiny exact-enumeration research model, not a connection to live Athena or evidence of a quantum advantage. Quantum algorithm, QML, and BB84 laboratories remain to be built. Browser storage is not a guaranteed backup, so use the Settings export regularly.
+The [coverage report](COVERAGE.md) is the authoritative list. In particular, pp. 17–39 still need full concept-by-concept authored lessons, equation derivations, worked calculations and richer relevant experiments. One checked source question does **not** make a page complete. The knowledge graph currently covers authored concepts on pp. 3–16 and linked personal notes; later chapters will join it as their concepts are authored. There is no AI tutor gateway.
