@@ -1,6 +1,6 @@
 # Android release build
 
-Quantum Atlas packages its existing offline web application in a Capacitor Android shell. The package ID is `com.quantumatlas.app`. The `v0.1.1` APK targets Android 15 (API 35) and supports Android 6 (API 23) and newer.
+Quantum Atlas packages its existing offline web application in a Capacitor Android shell. The package ID is `com.quantumatlas.app`. The `v0.1.2` APK targets Android 15 (API 35) and supports Android 6 (API 23) and newer.
 
 ## Prerequisites
 
