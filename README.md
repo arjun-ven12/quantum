@@ -20,6 +20,8 @@ npm run preview
 
 Open the HTTPS deployment in Android Chrome and choose **Install app** or **Add to Home screen**. `localhost` also supports service-worker testing. Bundled lessons, source text, the PDF and lab code are precached. Notes, progress, assessments and circuits are stored in IndexedDB. Export a JSON backup from Settings regularly; browser storage is not a guaranteed permanent backup.
 
+A signed Android APK is also available from [GitHub Releases](https://github.com/arjun-ven12/quantum/releases). See [Android release build](ANDROID.md) for build, signing, and installation instructions.
+
 ## Verify
 
 ```bash

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Quantum Atlas</string>
+    <string name="title_activity_main">Quantum Atlas</string>
+    <string name="package_name">com.quantumatlas.app</string>
+    <string name="custom_url_scheme">com.quantumatlas.app</string>
+</resources>

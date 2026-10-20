@@ -2,7 +2,14 @@ node_modules/
 dist/
 test-results/
 playwright-report/
+/playwright-report
+/test-results
 *.tsbuildinfo
 .DS_Store
 .env
 .env.*
+release-signing/
+/android/app/build
+/android/build
+/android/.gradle
+/android/capacitor-cordova-android-plugins
