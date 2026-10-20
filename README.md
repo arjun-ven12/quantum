@@ -27,6 +27,7 @@ npm test
 npm run test:e2e
 npm run test:offline
 npm run coverage:report
+npm run quality:report
 ```
 
 Playwright tests cover desktop, 360×800 portrait and 800×360 landscape viewports. Install the browser with `npx playwright install --with-deps chromium` if necessary.
@@ -50,3 +51,7 @@ The simulator uses qubit 0 as the most significant bit: two-qubit array indices 
 ## Remaining work and limits
 
 The [coverage report](COVERAGE.md) lists every page and the implemented interaction. Each concept currently offers one numeric exercise template and two checked derivation decisions. More parameterised variants, open algebraic answer checking, and richer diagram interaction would improve depth. The labs use ideal small-system simulation; BB84 is educational, not a secure cryptographic implementation. The Athena allocation lab is self-contained and has no live execution connection. Optional AI tutoring and a secure server-side gateway are still unimplemented. Browser storage can be lost, so export JSON backups from Settings.
+
+## Educational quality pass
+
+Each concept now has a guided Teach Me sequence that reveals intuition, prerequisites, notation, mathematical reasoning, a worked case and a transfer prompt. “I’m Confused” saves a review flag and links directly to prerequisite lessons. Chapter 1 has additional authored mental models, alternative explanations and answer-specific feedback. The source workbook has eight validated supplementary transfer cases. Review scheduling uses local answer, hint and error history and does not treat repeated answers in one sitting as spaced recall. See [QUALITY.md](QUALITY.md) for every concept’s audit flags and remaining limitations.

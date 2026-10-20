@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:offline": "npm run build && playwright test -c playwright.offline.config.ts",
-    "coverage:report": "tsx scripts/generate-coverage.ts"
+    "coverage:report": "tsx scripts/generate-coverage.ts",
+    "quality:report": "tsx scripts/generate-quality-audit.ts"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.3.0",

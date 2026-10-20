@@ -1,0 +1,7 @@
+import {describe,it,expect} from 'vitest';
+import {reviewState,eventsForConcept} from './mastery';
+import type {StudyEvent} from './storage';
+const event=(id:string,correct:boolean,hints:number,day:number):StudyEvent=>({id:`${id}-${day}`,conceptId:id,correct,hints,at:new Date(Date.UTC(2026,0,day)).toISOString()});
+describe('transparent review schedule',()=>{it('schedules successful recall and resets after an error',()=>{const a=event('modulus:check',true,0,1),b=event('modulus:practice',true,0,2),c=event('modulus:practice',false,0,3);expect(reviewState([a],new Date(Date.UTC(2026,0,1))).intervalDays).toBe(1);expect(reviewState([a,b],new Date(Date.UTC(2026,0,4))).intervalDays).toBe(3);const failed=reviewState([a,b,c],new Date(Date.UTC(2026,0,4)));expect(failed.streak).toBe(0);expect(failed.due).toBe(true);expect(failed.label).toBe('Needs work')});it('keeps hints in the evidence and filters by concept boundary',()=>{const events=[event('x:practice',true,1,1),event('xy:practice',true,0,1)];expect(eventsForConcept(events,'x')).toHaveLength(1);expect(reviewState(eventsForConcept(events,'x')).successes).toBe(1)})});
+
+describe('same-session evidence',()=>{it('does not grant spaced recall for repeated answers in one sitting',()=>{const first=event('x:check',true,0,1);const second={...event('x:practice',true,0,1),id:'second'};const state=reviewState([first,second],new Date(Date.UTC(2026,0,1)));expect(state.successes).toBe(2);expect(state.streak).toBe(1);expect(state.intervalDays).toBe(1)})});
