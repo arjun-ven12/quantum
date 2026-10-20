@@ -1,4 +1,8 @@
 /** Supplemental teaching notes. These are explicitly separate from the textbook transcript. */
+import {misconceptionFeedback} from './deep-checks';
+import {deepTeaching} from './deep-teaching';
+import {numericMistakes} from './numeric-mistakes';
+import {authoredConcepts} from './concepts';
 export type TeachingNote={bridge:string;alternate:string;whyUseful:string;misconceptions?:[string,string,string];numericTraps?:{value:number;message:string}[]};
 export const chapterOneTeaching:Record<string,TeachingNote>={
 'complex-modulus':{bridge:'Picture an amplitude as an arrow with horizontal and vertical components. Conjugation reflects that arrow across the horizontal axis. Multiplying the two arrows cancels their angles, leaving length squared.',alternate:'For 3+4i, draw a right triangle with legs 3 and 4. Its length is 5, while the probability contribution is 5²=25 before the whole state is normalized.',whyUseful:'Every state probability and inner product depends on conjugation and squared modulus.',misconceptions:['Correct option.','z² is not always zero: (1+i)²=2i. The problem is that it can be complex.','z² includes the real component, but its cross term can be imaginary; use z*z for a probability contribution.'],numericTraps:[{value:5,message:'5 is the modulus |z|. The question asks for |z|², so square it.'},{value:7,message:'Adding the components is not a length calculation; square each component first.'}]},
@@ -17,9 +21,15 @@ export const chapterOneTeaching:Record<string,TeachingNote>={
 'separability':{bridge:'A product state has independent amplitude factors for the two qubits. Arrange its four amplitudes as a 2×2 table; a product table has rank one.',alternate:'For amplitudes a,b,c,d, compare ad with bc. If they differ, no two one-qubit vectors can produce that pure state.',whyUseful:'This is a quick exact test for entanglement of a pure two-qubit state.'},
 'local-tensor-gate':{bridge:'To act on one qubit of a pair, use its gate on that wire and identity on the other. The resulting 4×4 operator respects the book’s wire order.',alternate:'X on q0 swaps 00↔10 and 01↔11; X on q1 swaps 00↔01 and 10↔11. Track one basis label through the circuit before multiplying the full matrix.',whyUseful:'It links small gate matrices to actual multi-qubit circuit updates.'}
 };
-export function teachingFor(id:string):TeachingNote|undefined{return chapterOneTeaching[id]}
-export function choiceFeedback(id:string,selected:number,correct:number,option:string,hint:string,explanation:string){if(selected===correct)return explanation;const authored=chapterOneTeaching[id]?.misconceptions?.[selected]??chapterOneMistakes[id]?.[selected];return authored??`You chose “${option}”. Recheck the decisive step: ${hint} ${explanation}`}
-export function numericFeedback(id:string,input:number,answer:number,hint:string,explanation:string){const trap=[...(chapterOneTeaching[id]?.numericTraps??[]),...(chapterOneNumericTraps[id]??[])].find(x=>Math.abs(x.value-input)<1e-6);if(trap)return trap.message;const direction=Number.isFinite(input)?input>answer?'Your result is larger than the reference value.':'Your result is smaller than the reference value.':'';return `${direction} ${hint} Check against the worked method: ${explanation}`}
+export function teachingFor(id:string):TeachingNote|undefined {
+  const chapterOne=chapterOneTeaching[id];
+  if(chapterOne)return chapterOne;
+  const note=deepTeaching[id];
+  if(!note)return undefined;
+  return {...note,whyUseful:authoredConcepts.find(concept=>concept.id===id)?.relevance??''};
+}
+export function choiceFeedback(id:string,selected:number,correct:number,option:string,hint:string,explanation:string){if(selected===correct)return explanation;const authored=chapterOneTeaching[id]?.misconceptions?.[selected]??chapterOneMistakes[id]?.[selected]??misconceptionFeedback(id,selected,correct);return authored??`You chose “${option}”. Recheck the decisive step: ${hint} ${explanation}`}
+export function numericFeedback(id:string,input:number,answer:number,hint:string,explanation:string){const trap=[...(chapterOneTeaching[id]?.numericTraps??[]),...(chapterOneNumericTraps[id]??[]),...(numericMistakes[id]??[])].find(x=>Math.abs(x.value-input)<1e-6);if(trap)return trap.message;const direction=Number.isFinite(input)?input>answer?'Your result is larger than the reference value.':'Your result is smaller than the reference value.':'';return `${direction} ${hint} Check against the worked method: ${explanation}`}
 /** Specific explanations for the tempting wrong answers in Chapter 1 checks. */
 export const chapterOneMistakes:Record<string,[string,string,string]>={
 'polar-euler':['Zero phase points to +1, not −1. Follow the unit circle halfway around.','π/2 points to +i. A second quarter-turn is needed to reach −1.',''],

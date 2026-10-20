@@ -9,5 +9,6 @@ import {qmlConcepts} from './qml';
 import {cryptoConcepts} from './crypto';
 import {athenaConcepts} from './athena';
 import {challengeConcepts} from './challenge';
-export const authoredConcepts=[...foundationConcepts,...mechanicsConcepts,...computationConcepts,...algorithmConcepts,...searchConcepts,...fourierConcepts,...optimizationConcepts,...qmlConcepts,...cryptoConcepts,...athenaConcepts,...challengeConcepts];
+import {improvedCheck} from './deep-checks';
+export const authoredConcepts=[...foundationConcepts,...mechanicsConcepts,...computationConcepts,...algorithmConcepts,...searchConcepts,...fourierConcepts,...optimizationConcepts,...qmlConcepts,...cryptoConcepts,...athenaConcepts,...challengeConcepts].map(improvedCheck);
 export const conceptsForPage=(page:number)=>authoredConcepts.filter(x=>x.page===page);
